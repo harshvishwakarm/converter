@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Average Calculator | UnitConvertly</title>
+    <link rel="icon" href="../../row.svg" type="image/svg+xml" />
+    <meta
+      name="description"
+      content="UnitConvertly Average Calculator se aap numbers ka mean, average aur total easily calculate kar sakte hain. Fast aur accurate results ke liye abhi use karein."
+    />
+    <meta
+      name="keywords"
+      content="average calculator, online average calculator, mean calculator, free average calculator, number average calculator, math average tool, unitconvertly"
+    />
+    <meta name="author" content="UnitConvertly Team" />
+
+    <style>
+      :root {
+        --primary: #1e40af;
+        --primary-dark: #1e3a8a;
+        --accent: #3b82f6;
+        --bg: #f8fafc;
+        --white: #ffffff;
+        --text: #0f172a;
+        --border: #e2e8f0;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header {
+        width: 100%;
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--primary-dark) 100%
+        );
+        color: white;
+        padding: 0.5rem 1rem;
+        box-shadow: var(--shadow-lg);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+
+      .logo-icon {
+        width: 2rem;
+        height: 2rem;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+      }
+
+      .logo div {
+        font-size: 1.5rem;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .menu-link {
+        display: none;
+        color: white;
+        font-size: 1.6rem;
+        text-decoration: none;
+        padding: 0.5rem;
+        border-radius: 0.375rem;
+      }
+
+      @media (max-width: 768px) {
+        .menu-link {
+          display: block;
+        }
+        .logo h1 {
+          font-size: 1.2rem;
+        }
+      }
+
+      main {
+        flex: 1;
+        max-width: 800px;
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      .converter {
+        background: var(--white);
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        box-shadow: var(--shadow);
+        margin-top: 20px;
+      }
+
+      .converter h1 {
+        text-align: center;
+        color: var(--primary);
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+      }
+
+      .input-group {
+        margin-bottom: 1rem;
+      }
+
+      .input-label {
+        font-weight: bold;
+        margin-bottom: 0.25rem;
+        display: block;
+      }
+
+      .input-field,
+      .textarea-field {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid var(--border);
+        border-radius: 0.5rem;
+        font-size: 1rem;
+      }
+
+      .calculate-btn {
+        width: 100%;
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .calculate-btn:hover {
+        background: var(--primary);
+      }
+
+      .result {
+        background: #d1fae5;
+        border: 1px solid #10b981;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        text-align: center;
+        font-weight: bold;
+        color: #065f46;
+        margin-top: 1rem;
+        margin-bottom: 20px;
+      }
+
+      section {
+        margin: 2rem 1rem;
+      }
+
+      h3 {
+        margin-bottom: 0.5rem;
+        color: var(--primary);
+      }
+      section p {
+        text-align: justify;
+      }
+
+      /* ✅ Formula styling */
+      .formula-box {
+        display: block;
+        margin: 15px auto;
+        text-align: center;
+        background: #f9f9f9;
+        border: 2px solid var(--border);
+        padding: 12px;
+        border-radius: 10px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #2c3e50;
+        width: fit-content;
+      }
+      .formula-box small {
+        display: block;
+        font-size: 14px;
+        font-weight: normal;
+        margin-top: 5px;
+        color: #555;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 0.5rem;
+      }
+
+      th,
+      td {
+        border: 1px solid var(--border);
+        padding: 0.75rem;
+        text-align: left;
+      }
+
+      th {
+        background: var(--accent);
+        color: white;
+      }
+
+      .related-tools {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .related-col {
+        padding: 0.2rem;
+      }
+
+      .related-col h4 {
+        margin-bottom: 0.5rem;
+        color: var(--primary-dark);
+      }
+
+      ul {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      ul li {
+        margin: 0.3rem 0;
+      }
+
+      ul li a {
+        color: rgb(14, 94, 75);
+        text-decoration: none;
+      }
+
+      ul li a:hover {
+        text-decoration: underline;
+      }
+
+      footer {
+        width: 100%;
+        background: var(--text);
+        color: white;
+        padding: 1rem;
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+      }
+
+      .footer-links {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .footer-links a {
+        color: #cbd5e1;
+        text-decoration: none;
+        font-size: 0.95rem;
+      }
+
+      .footer-links a:hover {
+        text-decoration: underline;
+      }
+
+      .footer-copy {
+        font-size: 0.85rem;
+        color: #94a3b8;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ✅ Sticky Gradient Header -->
+    <header class="header">
+      <div class="header-content">
+        <div class="logo">
+          <div class="logo-icon" aria-label="UnitConvertly Logo">⚡</div>
+          <div>Unit Convertly</div>
+        </div>
+        <a href="javascript:void(0)" class="menu-link" onclick="openSitemap()"
+          >☰</a
+        >
+      </div>
+    </header>
+
+    <main>
+      <div class="converter">
+        <h1>Average Calculator</h1>
+        <div class="result" id="result">Enter numbers to see the average</div>
+
+        <div class="input-group">
+          <label class="input-label">Enter Numbers (comma separated)</label>
+          <input
+            type="text"
+            id="inputNumbers"
+            class="input-field"
+            placeholder="Example: 10, 20, 30, 40"
+          />
+        </div>
+
+        <button class="calculate-btn" onclick="calculateAverage()">
+          Calculate Average
+        </button>
+      </div>
+
+      <section>
+        <h3>About Average Calculation</h3>
+        <p>
+          The average (or mean) is calculated by adding all numbers together and
+          then dividing the sum by the total number of values. It is commonly
+          used in statistics, education, finance, and everyday life.
+          <span class="formula-box">
+            Average (Mean) = Σx / n
+            <small
+              >where Σx = Sum of all values, and n = Total number of
+              values</small
+            >
+          </span>
+        </p>
+      </section>
+
+      <section>
+        <div class="related-tools">
+          <div class="related-col">
+            <h4>Related Tools</h4>
+            <ul>
+              <li>
+                <a href="../calculators/age-calculator.html">Age Calculator</a>
+              </li>
+              <li>
+                <a href="../calculators/percentage-calculator.html"
+                  >Percentage Calculator</a
+                >
+              </li>
+              <li>
+                <a href="../calculators/attendence-calculator.html"
+                  >Attendence Calculator</a
+                >
+              </li>
+              <li>
+                <a href="../calculators/discount-calculator.html"
+                  >Discount Calculator</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="related-col">
+            <h4>Converters</h4>
+            <ul>
+              <li><a href="../index.html">Unit Converters</a></li>
+              <li>
+                <a href="../converter/length-converter.html"
+                  >Length Converter</a
+                >
+              </li>
+              <li>
+                <a href="../converter/temprature-converter.html"
+                  >Temprature Converter</a
+                >
+              </li>
+              <li>
+                <a href="../converter/storage-converter.html"
+                  >Storage Converter</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="related-col">
+            <h4>Other</h4>
+            <ul>
+              <li><a href="average-calculator.html">Word Counter</a></li>
+              <li>
+                <a href="../converter/text-case-converter.html"
+                  >Text Case converter</a
+                >
+              </li>
+              <li>
+                <a href="../converter/color-code-converter.html"
+                  >color-code converter</a
+                >
+              </li>
+              <li>
+                <a href="../tools/number-generator.html">number-generator</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="../about.html">About</a>
+          <a href="../about.html">Contact</a>
+          <a href="../about.html">Privacy Policy</a>
+
+          <a href="../sitemap.html">Sitemap</a>
+        </div>
+        <div class="footer-copy">
+          © 2025 Unit Convertly. All Rights Reserved.
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      function calculateAverage() {
+        const input = document.getElementById("inputNumbers").value;
+        const resultEl = document.getElementById("result");
+
+        if (!input.trim()) {
+          resultEl.textContent = "Please enter some numbers";
+          return;
+        }
+
+        const numbers = input.split(",").map((num) => parseFloat(num.trim()));
+
+        if (numbers.some(isNaN)) {
+          resultEl.textContent =
+            "Please enter valid numbers separated by commas";
+          return;
+        }
+
+        const sum = numbers.reduce((acc, val) => acc + val, 0);
+        const avg = sum / numbers.length;
+
+        resultEl.innerHTML = `<strong>Average:</strong> ${avg.toFixed(2)}`;
+      }
+      function openSitemap() {
+        window.location.href = "../../sitemap.html";
+      }
+    </script>
+  </body>
+</html>

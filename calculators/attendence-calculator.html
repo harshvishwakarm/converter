@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Attendance Calculator | UnitConvertly</title>
+    <link rel="icon" href="../../row.svg" type="image/svg+xml" />
+    <meta
+      name="description"
+      content="UnitConvertly Attendance Calculator se aap apne total working days, present days aur percentage attendance easily calculate kar sakte hain. Fast aur accurate attendance calculation ke liye abhi use karein."
+    />
+    <meta
+      name="keywords"
+      content="attendance calculator, online attendance calculator, attendance percentage, student attendance calculator, class attendance, free attendance calculator, unitconvertly"
+    />
+    <meta name="author" content="UnitConvertly Team" />
+
+    <style>
+      :root {
+        --primary: #1e40af;
+        --primary-dark: #1e3a8a;
+        --accent: #3b82f6;
+        --bg: #f8fafc;
+        --white: #ffffff;
+        --text: #0f172a;
+        --border: #e2e8f0;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+        --success: #10b981;
+        --success-bg: #d1fae5;
+        --warning: #f59e0b;
+        --warning-bg: #fef3c7;
+        --danger: #ef4444;
+        --danger-bg: #fee2e2;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header {
+        width: 100%;
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--primary-dark) 100%
+        );
+        color: white;
+        padding: 0.5rem 1rem;
+        box-shadow: var(--shadow-lg);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+
+      .logo-icon {
+        width: 2rem;
+        height: 2rem;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+      }
+
+      .logo div {
+        font-size: 1.5rem;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .menu-link {
+        display: none;
+        color: white;
+        font-size: 1.6rem;
+        text-decoration: none;
+        padding: 0.5rem;
+        border-radius: 0.375rem;
+      }
+
+      @media (max-width: 768px) {
+        .menu-link {
+          display: block;
+        }
+        .logo h1 {
+          font-size: 1.2rem;
+        }
+      }
+
+      main {
+        flex: 1;
+        max-width: 800px;
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      .converter {
+        background: var(--white);
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        box-shadow: var(--shadow);
+        margin: 20px 1rem;
+      }
+
+      .converter h1 {
+        text-align: center;
+        color: var(--primary);
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+        font-weight: 700;
+      }
+
+      .input-group {
+        margin-bottom: 1rem;
+      }
+
+      .input-label {
+        font-weight: bold;
+        margin-bottom: 0.25rem;
+        display: block;
+        color: var(--text);
+      }
+
+      .input-field,
+      .select-field {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid var(--border);
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .input-field:focus,
+      .select-field:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+
+      .from-to-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .from-to-row .input-group {
+        flex: 1 1 auto;
+        margin-bottom: 0;
+      }
+
+      .swap-btn {
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .swap-btn:hover {
+        background: var(--primary);
+        transform: rotate(180deg);
+      }
+
+      .result {
+        background: var(--warning-bg);
+        border: 1px solid var(--warning);
+        padding: 1rem;
+        border-radius: 0.5rem;
+        text-align: center;
+        font-weight: bold;
+        color: #92400e;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .result.success {
+        background: var(--success-bg);
+        border-color: var(--success);
+        color: #065f46;
+      }
+
+      .result.danger {
+        background: var(--danger-bg);
+        border-color: var(--danger);
+        color: #991b1b;
+      }
+
+      .calc-types {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .calc-type {
+        background: #f8fafc;
+        border: 2px solid var(--border);
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+      }
+
+      .calc-type:hover {
+        border-color: var(--accent);
+      }
+
+      .calc-type.active {
+        border-color: var(--primary);
+        background: #eff6ff;
+        color: var(--primary);
+        font-weight: bold;
+      }
+
+      section {
+        margin: 2rem 1rem;
+      }
+
+      h3 {
+        margin-bottom: 0.5rem;
+        color: var(--primary);
+      }
+
+      section p {
+        text-align: justify;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 0.5rem;
+      }
+
+      th,
+      td {
+        border: 1px solid var(--border);
+        padding: 0.75rem;
+        text-align: left;
+      }
+
+      th {
+        background: var(--accent);
+        color: white;
+      }
+
+      .related-tools {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .related-col {
+        padding: 0.2rem;
+      }
+
+      .related-col h4 {
+        margin-bottom: 0.5rem;
+        color: var(--primary-dark);
+      }
+
+      ul {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      ul li {
+        margin: 0.3rem 0;
+      }
+
+      ul li a {
+        color: rgb(14, 94, 75);
+        text-decoration: none;
+      }
+
+      ul li a:hover {
+        text-decoration: underline;
+      }
+
+      footer {
+        width: 100%;
+        background: var(--text);
+        color: white;
+        padding: 1rem;
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+      }
+
+      .footer-links {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .footer-links a {
+        color: #cbd5e1;
+        text-decoration: none;
+        font-size: 0.95rem;
+      }
+
+      .footer-links a:hover {
+        text-decoration: underline;
+      }
+
+      .footer-copy {
+        font-size: 0.85rem;
+        color: #94a3b8;
+      }
+
+      @media (max-width: 640px) {
+        .from-to-row {
+          flex-direction: column;
+        }
+        .swap-btn {
+          transform: rotate(90deg);
+        }
+        .calc-types {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-content">
+        <div class="logo">
+          <div class="logo-icon" aria-label="UnitConvertly Logo">⚡</div>
+          <div>Unit Convertly</div>
+        </div>
+        <a href="javascript:void(0)" class="menu-link" onclick="openSitemap()"
+          >☰</a
+        >
+      </div>
+    </header>
+
+    <main>
+      <div class="converter">
+        <h1>Attendance Calculator</h1>
+
+        <div class="calc-types">
+          <div class="calc-type active" onclick="selectType('percentage')">
+            Calculate Percentage
+          </div>
+          <div class="calc-type" onclick="selectType('required')">
+            Required Classes
+          </div>
+          <div class="calc-type" onclick="selectType('canMiss')">
+            Classes Can Miss
+          </div>
+          <div class="calc-type" onclick="selectType('toAchieve')">
+            Classes to Achieve
+          </div>
+        </div>
+        <div class="result" id="result">
+          Select calculation type and enter values
+        </div>
+        <!-- Percentage Calculator -->
+        <div id="percentageCalc" class="calc-inputs">
+          <div class="from-to-row">
+            <div class="input-group">
+              <label class="input-label">Classes Attended</label>
+              <input
+                type="number"
+                id="attendedClasses"
+                class="input-field"
+                placeholder="Enter attended classes"
+                min="0"
+              />
+            </div>
+            <div class="input-group">
+              <label class="input-label">Total Classes</label>
+              <input
+                type="number"
+                id="totalClasses"
+                class="input-field"
+                placeholder="Enter total classes"
+                min="1"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Required Calculator -->
+        <div id="requiredCalc" class="calc-inputs" style="display: none">
+          <div class="input-group">
+            <label class="input-label">Current Attendance (%)</label>
+            <input
+              type="number"
+              id="currentPercentage"
+              class="input-field"
+              placeholder="Enter current percentage"
+              min="0"
+              max="100"
+            />
+          </div>
+          <div class="from-to-row">
+            <div class="input-group">
+              <label class="input-label">Target Percentage (%)</label>
+              <input
+                type="number"
+                id="targetPercentage"
+                class="input-field"
+                placeholder="Enter target percentage"
+                min="0"
+                max="100"
+              />
+            </div>
+            <div class="input-group">
+              <label class="input-label">Additional Classes</label>
+              <input
+                type="number"
+                id="additionalClasses"
+                class="input-field"
+                placeholder="Future classes"
+                min="1"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Can Miss Calculator -->
+        <div id="canMissCalc" class="calc-inputs" style="display: none">
+          <div class="from-to-row">
+            <div class="input-group">
+              <label class="input-label">Classes Attended</label>
+              <input
+                type="number"
+                id="currentAttended"
+                class="input-field"
+                placeholder="Current attended"
+                min="0"
+              />
+            </div>
+            <div class="input-group">
+              <label class="input-label">Total Classes</label>
+              <input
+                type="number"
+                id="currentTotal"
+                class="input-field"
+                placeholder="Current total"
+                min="1"
+              />
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Minimum Required (%)</label>
+            <input
+              type="number"
+              id="minimumRequired"
+              class="input-field"
+              placeholder="Minimum percentage (e.g., 75)"
+              min="0"
+              max="100"
+            />
+          </div>
+        </div>
+
+        <!-- To Achieve Calculator -->
+        <div id="toAchieveCalc" class="calc-inputs" style="display: none">
+          <div class="from-to-row">
+            <div class="input-group">
+              <label class="input-label">Classes Attended</label>
+              <input
+                type="number"
+                id="currentAttendedAchieve"
+                class="input-field"
+                placeholder="Current attended"
+                min="0"
+              />
+            </div>
+            <div class="input-group">
+              <label class="input-label">Total Classes</label>
+              <input
+                type="number"
+                id="currentTotalAchieve"
+                class="input-field"
+                placeholder="Current total"
+                min="1"
+              />
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Target Attendance (%)</label>
+            <input
+              type="number"
+              id="targetPercentageAchieve"
+              class="input-field"
+              placeholder="Target percentage (e.g., 75)"
+              min="0"
+              max="100"
+            />
+          </div>
+        </div>
+      </div>
+
+      <section>
+        <h3>About Attendance Calculation</h3>
+        <p>
+          Attendance calculation helps students track their class attendance and
+          plan accordingly. Most institutions require a minimum of 75%
+          attendance. This tool helps you calculate your current percentage,
+          find how many classes you need to attend, or determine how many you
+          can safely miss while maintaining the required percentage.
+        </p>
+      </section>
+
+      <section>
+        <h3>Attendance Status Guide</h3>
+        <table>
+          <tr>
+            <th>Percentage Range</th>
+            <th>Status</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>75% - 100%</td>
+            <td>✅ Good</td>
+            <td>Meets minimum requirements</td>
+          </tr>
+          <tr>
+            <td>60% - 74%</td>
+            <td>⚠️ Warning</td>
+            <td>Below minimum, action needed</td>
+          </tr>
+          <tr>
+            <td>0% - 59%</td>
+            <td>❌ Critical</td>
+            <td>Seriously below requirements</td>
+          </tr>
+        </table>
+      </section>
+
+      <section>
+        <div class="related-tools">
+          <div class="related-col">
+            <h4>Related Tools</h4>
+            <ul>
+              <li>
+                <a href="../calculators/avg-calculator.html"
+                  >Average Calculator</a
+                >
+              </li>
+              <li>
+                <a href="../calculators/percentage-calculator.html"
+                  >Percentage Calculator</a
+                >
+              </li>
+              <li>
+                <a href="../calculators/age-calculator.html">Age Calculator</a>
+              </li>
+              <li>
+                <a href="../calculators/discount-calculator.html"
+                  >Discount Calculator</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="related-col">
+            <h4>Converters</h4>
+            <ul>
+              <li><a href="../index.html">Unit Converters</a></li>
+              <li>
+                <a href="../converter/length-converter.html"
+                  >Length Converter</a
+                >
+              </li>
+              <li>
+                <a href="../converter/temprature-converter.html"
+                  >Temprature Converter</a
+                >
+              </li>
+              <li>
+                <a href="../converter/speed-converter.html">Speed Converter</a>
+              </li>
+            </ul>
+          </div>
+          <div class="related-col">
+            <h4>Other</h4>
+            <ul>
+              <li><a href="../tools/word-counter.html">Word Counter</a></li>
+              <li>
+                <a href="../number/number-to-roman.html">number-to-roman</a>
+              </li>
+              <li>
+                <a href="../number/lakh-to-million.html">lakh to million</a>
+              </li>
+              <li>
+                <a href="../tools/number-generator.html">number-generator</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="../about.html">About</a>
+          <a href="../about.html">Contact</a>
+          <a href="../about.html">Privacy Policy</a>
+
+          <a href="../sitemap.html">Sitemap</a>
+        </div>
+        <div class="footer-copy">
+          © 2025 Unit Convertly. All Rights Reserved.
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      let currentType = "percentage";
+
+      function selectType(type) {
+        // Remove active class from all types
+        document
+          .querySelectorAll(".calc-type")
+          .forEach((el) => el.classList.remove("active"));
+
+        // Add active class to selected type
+        event.target.classList.add("active");
+
+        // Hide all calc inputs
+        document
+          .querySelectorAll(".calc-inputs")
+          .forEach((el) => (el.style.display = "none"));
+
+        // Show selected calc input
+        currentType = type;
+        document.getElementById(type + "Calc").style.display = "block";
+
+        // Update result message
+        const resultEl = document.getElementById("result");
+        resultEl.className = "result";
+
+        switch (type) {
+          case "percentage":
+            resultEl.textContent =
+              "Enter attended and total classes to calculate percentage";
+            break;
+          case "required":
+            resultEl.textContent =
+              "Enter current %, target %, and additional classes";
+            break;
+          case "canMiss":
+            resultEl.textContent =
+              "Enter current attendance to find classes you can miss";
+            break;
+          case "toAchieve":
+            resultEl.textContent =
+              "Enter current data to find classes needed for target";
+            break;
+        }
+
+        calculate();
+      }
+
+      function calculate() {
+        const resultEl = document.getElementById("result");
+        let result = "";
+        let status = "";
+
+        switch (currentType) {
+          case "percentage":
+            result = calculatePercentage();
+            break;
+          case "required":
+            result = calculateRequired();
+            break;
+          case "canMiss":
+            result = calculateCanMiss();
+            break;
+          case "toAchieve":
+            result = calculateToAchieve();
+            break;
+        }
+
+        if (result.includes("✅")) {
+          resultEl.className = "result success";
+        } else if (result.includes("⚠️")) {
+          resultEl.className = "result";
+        } else if (result.includes("❌")) {
+          resultEl.className = "result danger";
+        } else {
+          resultEl.className = "result";
+        }
+
+        resultEl.innerHTML = result;
+      }
+
+      function calculatePercentage() {
+        const attended = parseFloat(
+          document.getElementById("attendedClasses").value
+        );
+        const total = parseFloat(document.getElementById("totalClasses").value);
+
+        if (isNaN(attended) || isNaN(total) || total <= 0 || attended < 0) {
+          return "Enter valid numbers for attended and total classes";
+        }
+
+        if (attended > total) {
+          return "Attended classes cannot be more than total classes";
+        }
+
+        const percentage = (attended / total) * 100;
+        let status = "✅ Good";
+
+        if (percentage < 75) {
+          if (percentage < 60) {
+            status = "❌ Critical";
+          } else {
+            status = "⚠️ Warning";
+          }
+        }
+
+        return `<strong>Attendance:</strong> ${percentage.toFixed(
+          1
+        )}% (${attended}/${total}) - ${status}`;
+      }
+
+      function calculateRequired() {
+        const currentPerc = parseFloat(
+          document.getElementById("currentPercentage").value
+        );
+        const targetPerc = parseFloat(
+          document.getElementById("targetPercentage").value
+        );
+        const additional = parseFloat(
+          document.getElementById("additionalClasses").value
+        );
+
+        if (
+          isNaN(currentPerc) ||
+          isNaN(targetPerc) ||
+          isNaN(additional) ||
+          additional <= 0
+        ) {
+          return "Enter valid current %, target %, and additional classes";
+        }
+
+        if (
+          targetPerc > 100 ||
+          currentPerc > 100 ||
+          targetPerc < 0 ||
+          currentPerc < 0
+        ) {
+          return "Percentages must be between 0 and 100";
+        }
+
+        const requiredAttendance = (targetPerc * additional) / 100;
+        const currentEquivalent = (currentPerc * additional) / 100;
+        const needToAttend = Math.ceil(requiredAttendance - currentEquivalent);
+
+        if (needToAttend <= 0) {
+          const canMissCount = Math.floor(
+            currentEquivalent - requiredAttendance
+          );
+          return `✅ <strong>Great!</strong> You already meet target! Can miss up to <strong>${canMissCount}</strong> classes`;
+        }
+
+        return `<strong>Result:</strong> Attend <strong>${needToAttend}</strong> out of next ${additional} classes to achieve ${targetPerc}%`;
+      }
+
+      function calculateCanMiss() {
+        const attended = parseFloat(
+          document.getElementById("currentAttended").value
+        );
+        const total = parseFloat(document.getElementById("currentTotal").value);
+        const targetPerc = parseFloat(
+          document.getElementById("minimumRequired").value
+        );
+
+        if (
+          isNaN(attended) ||
+          isNaN(total) ||
+          isNaN(targetPerc) ||
+          total <= 0 ||
+          attended < 0
+        ) {
+          return "Enter valid numbers for current attendance and minimum required %";
+        }
+
+        if (attended > total) {
+          return "Attended classes cannot be more than total classes";
+        }
+
+        const currentPerc = (attended / total) * 100;
+
+        if (currentPerc < targetPerc) {
+          return `❌ Current attendance (${currentPerc.toFixed(
+            1
+          )}%) is below minimum (${targetPerc}%). Cannot miss any classes!`;
+        }
+
+        // Calculate maximum classes that can be missed
+        let canMiss = 0;
+        let tempTotal = total;
+
+        while ((attended / (tempTotal + 1)) * 100 >= targetPerc) {
+          tempTotal++;
+          canMiss++;
+        }
+
+        return `✅ <strong>Result:</strong> You can miss up to <strong>${canMiss}</strong> classes and maintain ${targetPerc}% attendance`;
+      }
+
+      function calculateToAchieve() {
+        const attended = parseFloat(
+          document.getElementById("currentAttendedAchieve").value
+        );
+        const total = parseFloat(
+          document.getElementById("currentTotalAchieve").value
+        );
+        const targetPerc = parseFloat(
+          document.getElementById("targetPercentageAchieve").value
+        );
+
+        if (
+          isNaN(attended) ||
+          isNaN(total) ||
+          isNaN(targetPerc) ||
+          total <= 0 ||
+          attended < 0
+        ) {
+          return "Enter valid numbers for current attendance and target %";
+        }
+
+        if (attended > total) {
+          return "Attended classes cannot be more than total classes";
+        }
+
+        const currentPerc = (attended / total) * 100;
+
+        if (currentPerc >= targetPerc) {
+          return `✅ <strong>Congratulations!</strong> You already have ${currentPerc.toFixed(
+            1
+          )}% attendance (target: ${targetPerc}%)`;
+        }
+
+        // Calculate classes needed: (attended + x) / (total + x) = target/100
+        const classesNeeded = Math.ceil(
+          (targetPerc * total - 100 * attended) / (100 - targetPerc)
+        );
+
+        if (classesNeeded <= 0) {
+          return `✅ You already meet the target attendance!`;
+        }
+
+        const newTotal = total + classesNeeded;
+        const newAttended = attended + classesNeeded;
+        const finalPercentage = (newAttended / newTotal) * 100;
+
+        return `<strong>Result:</strong> Attend next <strong>${classesNeeded} consecutive classes</strong> to achieve ${targetPerc}% (Final: ${finalPercentage.toFixed(
+          1
+        )}%)`;
+      }
+
+      // Add input event listeners for real-time calculation
+      document.addEventListener("DOMContentLoaded", function () {
+        const inputs = document.querySelectorAll(".input-field");
+        inputs.forEach((input) => {
+          input.addEventListener("input", function () {
+            clearTimeout(this.calcTimeout);
+            this.calcTimeout = setTimeout(() => {
+              calculate();
+            }, 300);
+          });
+        });
+      });
+      function openSitemap() {
+        window.location.href = "../../sitemap.html";
+      }
+    </script>
+  </body>
+</html>

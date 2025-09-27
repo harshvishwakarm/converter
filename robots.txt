@@ -1,0 +1,2 @@
+User-agent: *
+Sitemap: https://converter.com/sitemap.xml

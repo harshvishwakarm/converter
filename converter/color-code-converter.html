@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Color Code Converter | UnitConvertly</title>
+    <link rel="icon" href="../../row.svg" type="image/svg+xml" />
+    <meta
+      name="description"
+      content="UnitConvertly Color Code Converter se aap HEX, RGB, HSL aur CMYK color codes easily convert kar sakte hain. Designers aur developers ke liye fast aur accurate color conversion tool."
+    />
+    <meta
+      name="keywords"
+      content="color code converter, hex to rgb, rgb to hex, hsl to rgb, cmyk to rgb, online color converter, color picker, free color converter, unitconvertly"
+    />
+    <meta name="author" content="UnitConvertly Team" />
+
+    <style>
+      :root {
+        --primary: #1e40af;
+        --primary-dark: #1e3a8a;
+        --accent: #3b82f6;
+        --bg: #f8fafc;
+        --white: #ffffff;
+        --text: #0f172a;
+        --border: #e2e8f0;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header {
+        width: 100%;
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--primary-dark) 100%
+        );
+        color: white;
+        padding: 0.5rem 1rem;
+        box-shadow: var(--shadow-lg);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+
+      .logo-icon {
+        width: 2rem;
+        height: 2rem;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+      }
+
+      .logo div {
+        font-size: 1.5rem;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .menu-link {
+        display: none;
+        color: white;
+        font-size: 1.6rem;
+        text-decoration: none;
+        padding: 0.5rem;
+        border-radius: 0.375rem;
+      }
+
+      @media (max-width: 768px) {
+        .menu-link {
+          display: block;
+        }
+        .logo h1 {
+          font-size: 1.2rem;
+        }
+      }
+
+      main {
+        flex: 1;
+        max-width: 1000px;
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      .converter {
+        background: var(--white);
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        box-shadow: var(--shadow);
+        margin: 20px 1rem;
+      }
+
+      .converter h1 {
+        text-align: center;
+        color: var(--primary);
+        margin-bottom: 1.5rem;
+        font-size: 1.2rem;
+      }
+
+      .color-input-section {
+        margin-bottom: 1.5rem;
+      }
+
+      .color-input-label {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        display: block;
+        color: var(--text);
+      }
+
+      .color-input-hint {
+        font-size: 0.9rem;
+        color: #666;
+        font-style: italic;
+        margin-bottom: 0.5rem;
+        display: block;
+      }
+
+      .color-input-field {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid var(--border);
+        border-radius: 0.5rem;
+        font-size: 1.1rem;
+        transition: border-color 0.3s ease;
+      }
+
+      .color-input-field:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      .color-converter-main {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+      }
+
+      @media (max-width: 768px) {
+        .color-converter-main {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+      }
+
+      .color-formats {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+      }
+
+      .format-row {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+      }
+
+      .format-label {
+        font-weight: bold;
+        min-width: 60px;
+        color: var(--text);
+        font-size: 0.95rem;
+      }
+
+      .format-value {
+        flex: 1;
+        padding: 0.6rem 0.8rem;
+        background: #f8f9fa;
+        border: 1px solid var(--border);
+        border-radius: 0.4rem;
+        font-family: "Courier New", monospace;
+        font-size: 0.95rem;
+        color: #333;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .format-value:hover {
+        background: #e9ecef;
+        border-color: var(--accent);
+      }
+
+      .format-value.copied {
+        background: #d4edda;
+        border-color: #28a745;
+        color: #155724;
+      }
+
+      .color-preview {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .preview-box {
+        width: 100%;
+        height: 200px;
+        border: 2px solid var(--border);
+        border-radius: 0.5rem;
+        background: #ff0000;
+        box-shadow: var(--shadow);
+        transition: all 0.3s ease;
+      }
+
+      .preview-info {
+        text-align: center;
+        padding: 0.5rem;
+        background: #f8f9fa;
+        border-radius: 0.4rem;
+        border: 1px solid var(--border);
+      }
+
+      .color-picker-link {
+        text-align: center;
+        margin-top: 1rem;
+        padding: 0.8rem;
+        background: var(--accent);
+        color: white;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        font-weight: 500;
+        display: block;
+        transition: background 0.3s ease;
+      }
+
+      .color-picker-link:hover {
+        background: var(--primary);
+        text-decoration: none;
+      }
+
+      section {
+        margin: 2rem 1rem;
+      }
+
+      h3 {
+        margin-bottom: 0.5rem;
+        color: var(--primary);
+      }
+
+      section p {
+        text-align: justify;
+        margin-bottom: 1rem;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 0.5rem;
+      }
+
+      th,
+      td {
+        border: 1px solid var(--border);
+        padding: 0.75rem;
+        text-align: left;
+      }
+
+      th {
+        background: var(--accent);
+        color: white;
+      }
+
+      .related-tools {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .related-col {
+        padding: 0.2rem;
+      }
+
+      .related-col h4 {
+        margin-bottom: 0.5rem;
+        color: var(--primary-dark);
+      }
+
+      ul {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      ul li {
+        margin: 0.3rem 0;
+      }
+
+      ul li a {
+        color: rgb(14, 94, 75);
+        text-decoration: none;
+      }
+
+      ul li a:hover {
+        text-decoration: underline;
+      }
+
+      footer {
+        width: 100%;
+        background: var(--text);
+        color: white;
+        padding: 1rem;
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+      }
+
+      .footer-links {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .footer-links a {
+        color: #cbd5e1;
+        text-decoration: none;
+        font-size: 0.95rem;
+      }
+
+      .footer-links a:hover {
+        text-decoration: underline;
+      }
+
+      .footer-copy {
+        font-size: 0.85rem;
+        color: #94a3b8;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-content">
+        <div class="logo">
+          <div class="logo-icon" aria-label="UnitConvertly Logo">⚡</div>
+          <div>Unit Convertly</div>
+        </div>
+        <a href="javascript:void(0)" class="menu-link" onclick="openSitemap()"
+          >☰</a
+        >
+      </div>
+    </header>
+
+    <main>
+      <div class="converter">
+        <h1>Color Code Converter</h1>
+
+        <div class="color-input-section">
+          <label class="color-input-label">Please Enter Here:</label>
+          <span class="color-input-hint"
+            >name, hex, rgb, hwb, cmyk, ncol,hsl, :</span
+          >
+          <input
+            type="text"
+            id="colorInput"
+            class="color-input-field"
+            placeholder="red"
+            value="red"
+          />
+        </div>
+
+        <div class="color-converter-main">
+          <div class="color-formats">
+            <div class="format-row">
+              <span class="format-label">Name</span>
+              <input type="text" id="nameValue" class="format-value" readonly />
+            </div>
+            <div class="format-row">
+              <span class="format-label">Hex</span>
+              <input type="text" id="hexValue" class="format-value" readonly />
+            </div>
+            <div class="format-row">
+              <span class="format-label">Rgb</span>
+              <input type="text" id="rgbValue" class="format-value" readonly />
+            </div>
+
+            <div class="format-row">
+              <span class="format-label">Hwb</span>
+              <input type="text" id="hwbValue" class="format-value" readonly />
+            </div>
+            <div class="format-row">
+              <span class="format-label">Hsl</span>
+              <input type="text" id="hslValue" class="format-value" readonly />
+            </div>
+
+            <div class="format-row">
+              <span class="format-label">NcoL</span>
+              <input type="text" id="ncolValue" class="format-value" readonly />
+            </div>
+            <div class="format-row">
+              <span class="format-label">Cmyk</span>
+              <input type="text" id="cmykValue" class="format-value" readonly />
+            </div>
+          </div>
+
+          <div class="color-preview">
+            <div id="previewBox" class="preview-box"></div>
+            <div class="preview-info">
+              <small>Color Preview</small>
+            </div>
+            <a href="#" class="color-picker-link"
+              >Use this color in our Color Picker</a
+            >
+          </div>
+        </div>
+      </div>
+
+      <section>
+        <h3>About Color Code Conversion</h3>
+        <p>
+          Color code conversion allows you to convert colors between different
+          formats such as HEX, RGB, HSL, HSV, CMYK, and more. This is essential
+          for web development, graphic design, and digital art projects.
+        </p>
+        <p>
+          Our color converter tool makes it easy to get accurate color codes in
+          any format instantly, helping designers and developers work more
+          efficiently.
+        </p>
+      </section>
+
+      <section>
+        <h3>Common Color Formats</h3>
+        <table>
+          <tr>
+            <th>Format</th>
+            <th>Description</th>
+            <th>Example</th>
+          </tr>
+          <tr>
+            <td>HEX</td>
+            <td>Hexadecimal color codes</td>
+            <td>#008000</td>
+          </tr>
+          <tr>
+            <td>RGB</td>
+            <td>Red, Green, Blue values</td>
+            <td>rgb(0, 128, 0)</td>
+          </tr>
+          <tr>
+            <td>HSL</td>
+            <td>Hue, Saturation, Lightness</td>
+            <td>hsl(120, 100%, 25%)</td>
+          </tr>
+          <tr>
+            <td>HSV/HSB</td>
+            <td>Hue, Saturation, Value/Brightness</td>
+            <td>hsv(120, 100%, 50%)</td>
+          </tr>
+          <tr>
+            <td>CMYK</td>
+            <td>Cyan, Magenta, Yellow, Key</td>
+            <td>cmyk(100%, 0%, 100%, 50%)</td>
+          </tr>
+          <tr>
+            <td>Named</td>
+            <td>Standard color names</td>
+            <td>Green, Red, Blue</td>
+          </tr>
+        </table>
+      </section>
+
+      <section>
+        <div class="related-tools">
+          
+          <div class="related-col">
+            <h4>Converters</h4>
+            <ul>
+              <li><a href="../index.html">Unit Converters</a></li>
+              <li>
+                <a href="../converter/length-converter.html"
+                  >Length Converter</a
+                >
+              </li>
+              <li>
+                <a href="../converter/temprature-converter.html"
+                  >Temprature Converter</a
+                >
+              </li>
+              <li>
+                <a href="../converter/storage-converter.html"
+                  >Storage Converter</a
+                >
+              </li>
+               <li>
+                <a href="../converter/time-converter.html"
+                  >Time Converter</a
+                >
+              </li>
+               <li>
+                <a href="../converter/speed-converter.html"
+                  >Speed Converter</a
+                >
+              </li>
+              <li>
+                <a href="../converter/frequency-converter.html"
+                  >Frequancy Converter</a
+                >
+              </li>
+              </li>
+              <li>
+                <a href="../converter/mass-converter.html"
+                  >Mass Converter</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="related-col">
+            <h4>Other Converter</h4>
+            <ul>
+              <li><a href="../converter/color-code-converter.html">Color-code converter </a></li>
+              <li>
+                <a href="../converter/text-case-converter.html">Text Case Converter</a>
+              </li>
+              <li><a href="../converter/base-converter.html">Binary Converter</a></li>
+              <li>
+                <a href="../converter/number-converter.html">Number Converter</a>
+              </li>
+               <li>
+                <a href="../converter/gold-weight-converter.html">gold-weight-converter </a>
+              </li>
+                <li>
+                <a href="../converter/large-number-converter.html">Large-number Converter </a>
+              </li>
+            </ul>
+          </div>
+           <div class="related-col">
+            <h4>Other tools</h4>
+            <ul>
+              <li><a href="../tools/number-generator.html">Number Generator </a></li>
+              <li>
+                <a href="../tools/word-counter.html">Word Counter</a>
+              </li>
+              <li><a href="../text/letter-to-ascii.html">letter-to-Ascii</a></li>
+              <li>
+                <a href="../number/number-to-roman.html">number-to-roman</a>
+              </li>
+              <li>
+                <a href="../number/number-to-word.html">number-to-word</a>
+              </li>
+            </ul>
+          </div>
+          <div class="related-col">
+            <h4>Related Tools</h4>
+            <ul>
+              <li>
+                <a href="../calculators/avg-calculator.html"
+                  >Average Calculator</a
+                >
+              </li>
+              <li>
+                <a href="../calculators/percentage-calculator.html"
+                  >Percentage Calculator</a
+                >
+              </li>
+              <li>
+                <a href="../calculators/attendence-calculator.html"
+                  >Attendence Calculator</a
+                >
+              </li>
+              <li>
+                <a href="../calculators/discount-calculator.html"
+                  >Discount Calculator</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="../about.html">About</a>
+          <a href="../about.html">Contact</a>
+          <a href="../about.html">Privacy Policy</a>
+
+          <a href="../sitemap.html">Sitemap</a>
+        </div>
+        <div class="footer-copy">
+          © 2025 Unit Convertly. All Rights Reserved.
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Color name to hex mapping
+      const colorNames = {
+        red: "#FF0000",
+        green: "#008000",
+        blue: "#0000FF",
+        white: "#FFFFFF",
+        black: "#000000",
+        yellow: "#FFFF00",
+        cyan: "#00FFFF",
+        magenta: "#FF00FF",
+        silver: "#C0C0C0",
+        gray: "#808080",
+        maroon: "#800000",
+        olive: "#808000",
+        lime: "#00FF00",
+        aqua: "#00FFFF",
+        teal: "#008080",
+        navy: "#000080",
+        fuchsia: "#FF00FF",
+        purple: "#800080",
+        orange: "#FFA500",
+        pink: "#FFC0CB",
+        brown: "#A52A2A",
+        gold: "#FFD700",
+        violet: "#EE82EE",
+        indigo: "#4B0082",
+        turquoise: "#40E0D0",
+      };
+
+      function parseColor(input) {
+        const cleanInput = input.toLowerCase().trim();
+
+        // Named color
+        if (colorNames[cleanInput]) {
+          return hexToRgb(colorNames[cleanInput]);
+        }
+
+        // Hex color
+        if (cleanInput.match(/^#([a-f0-9]{3}){1,2}$/i)) {
+          return hexToRgb(cleanInput);
+        }
+
+        // RGB color
+        const rgbMatch = cleanInput.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+        if (rgbMatch) {
+          return {
+            r: parseInt(rgbMatch[1]),
+            g: parseInt(rgbMatch[2]),
+            b: parseInt(rgbMatch[3]),
+          };
+        }
+
+        // HSL color
+        const hslMatch = cleanInput.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+        if (hslMatch) {
+          const h = parseInt(hslMatch[1]);
+          const s = parseInt(hslMatch[2]) / 100;
+          const l = parseInt(hslMatch[3]) / 100;
+          return hslToRgb(h, s, l);
+        }
+
+        return null;
+      }
+
+      function hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result
+          ? {
+              r: parseInt(result[1], 16),
+              g: parseInt(result[2], 16),
+              b: parseInt(result[3], 16),
+            }
+          : null;
+      }
+
+      function rgbToHex(r, g, b) {
+        return (
+          "#" +
+          ((1 << 24) + (r << 16) + (g << 8) + b)
+            .toString(16)
+            .slice(1)
+            .toUpperCase()
+        );
+      }
+
+      function rgbToHsl(r, g, b) {
+        r /= 255;
+        g /= 255;
+        b /= 255;
+        const max = Math.max(r, g, b),
+          min = Math.min(r, g, b);
+        let h,
+          s,
+          l = (max + min) / 2;
+
+        if (max === min) {
+          h = s = 0;
+        } else {
+          const d = max - min;
+          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+          switch (max) {
+            case r:
+              h = (g - b) / d + (g < b ? 6 : 0);
+              break;
+            case g:
+              h = (b - r) / d + 2;
+              break;
+            case b:
+              h = (r - g) / d + 4;
+              break;
+          }
+          h /= 6;
+        }
+
+        return {
+          h: Math.round(h * 360),
+          s: Math.round(s * 100),
+          l: Math.round(l * 100),
+        };
+      }
+
+      function hslToRgb(h, s, l) {
+        h /= 360;
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+
+        const hue2rgb = (t) => {
+          if (t < 0) t += 1;
+          if (t > 1) t -= 1;
+          if (t < 1 / 6) return p + (q - p) * 6 * t;
+          if (t < 1 / 2) return q;
+          if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+          return p;
+        };
+
+        const r = Math.round(hue2rgb(h + 1 / 3) * 255);
+        const g = Math.round(hue2rgb(h) * 255);
+        const b = Math.round(hue2rgb(h - 1 / 3) * 255);
+
+        return { r, g, b };
+      }
+
+      function rgbToCmyk(r, g, b) {
+        const c = 1 - r / 255;
+        const m = 1 - g / 255;
+        const y = 1 - b / 255;
+        const k = Math.min(c, Math.min(m, y));
+
+        return {
+          c: Math.round(((c - k) / (1 - k)) * 100) || 0,
+          m: Math.round(((m - k) / (1 - k)) * 100) || 0,
+          y: Math.round(((y - k) / (1 - k)) * 100) || 0,
+          k: Math.round(k * 100),
+        };
+      }
+
+      function rgbToHwb(r, g, b) {
+        const hsl = rgbToHsl(r, g, b);
+        const w = Math.round((Math.min(r, g, b) / 255) * 100);
+        const bl = Math.round((1 - Math.max(r, g, b) / 255) * 100);
+
+        return {
+          h: hsl.h,
+          w: w,
+          b: bl,
+        };
+      }
+
+      function getColorName(r, g, b) {
+        const hex = rgbToHex(r, g, b);
+        for (const [name, value] of Object.entries(colorNames)) {
+          if (value.toUpperCase() === hex) {
+            return name.charAt(0).toUpperCase() + name.slice(1);
+          }
+        }
+        return hex;
+      }
+
+      function updateColorDisplay(rgb) {
+        if (!rgb) return;
+
+        const { r, g, b } = rgb;
+        const hex = rgbToHex(r, g, b);
+        const hsl = rgbToHsl(r, g, b);
+        const cmyk = rgbToCmyk(r, g, b);
+        const hwb = rgbToHwb(r, g, b);
+        const colorName = getColorName(r, g, b);
+
+        // Update display values
+        document.getElementById("nameValue").value = colorName;
+        document.getElementById("rgbValue").value = `rgb(${r}, ${g}, ${b})`;
+        document.getElementById("hexValue").value = hex;
+        document.getElementById(
+          "hslValue"
+        ).value = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+        document.getElementById(
+          "hwbValue"
+        ).value = `hwb(${hwb.h}, ${hwb.w}%, ${hwb.b}%)`;
+        document.getElementById(
+          "cmykValue"
+        ).value = `cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%)`;
+        document.getElementById("ncolValue").value = `R${Math.round(
+          (r / 255) * 100
+        )}, ${Math.round((g / 255) * 100)}%, ${Math.round((b / 255) * 100)}%`;
+
+        // Update preview
+        const previewBox = document.getElementById("previewBox");
+        previewBox.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+      }
+
+      function convertColor() {
+        const input = document.getElementById("colorInput").value;
+        const rgb = parseColor(input);
+
+        if (rgb) {
+          updateColorDisplay(rgb);
+        } else {
+          // Clear values for invalid input
+          [
+            "nameValue",
+            "rgbValue",
+            "hexValue",
+            "hslValue",
+            "hwbValue",
+            "cmykValue",
+            "ncolValue",
+          ].forEach((id) => {
+            document.getElementById(id).value = "Invalid color";
+          });
+          document.getElementById("previewBox").style.backgroundColor =
+            "#f8f9fa";
+        }
+      }
+
+      // Add click-to-copy functionality
+      document.querySelectorAll(".format-value").forEach((element) => {
+        element.addEventListener("click", () => {
+          element.select();
+          document.execCommand("copy");
+          element.classList.add("copied");
+          setTimeout(() => {
+            element.classList.remove("copied");
+          }, 1000);
+        });
+      });
+
+      // Initialize with default color
+      document.addEventListener("DOMContentLoaded", () => {
+        convertColor();
+      });
+
+      // Add event listener for input changes
+      document
+        .getElementById("colorInput")
+        .addEventListener("input", convertColor);
+      document
+        .getElementById("colorInput")
+        .addEventListener("change", convertColor);
+      function openSitemap() {
+        window.location.href = "../../sitemap.html";
+      }
+    </script>
+  </body>
+</html>

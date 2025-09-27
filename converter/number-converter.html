@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Number Converter | UnitConvertly</title>
+    <link rel="icon" href="../../row.svg" type="image/svg+xml" />
+    <meta
+      name="description"
+      content="UnitConvertly Number Converter se aap numbers ko words aur roman numerals mein easily convert kar sakte hain. Fast aur accurate number to words aur number to roman conversion ke liye abhi try karein."
+    />
+    <meta
+      name="keywords"
+      content="number converter, number to words, number to roman, number to text, convert number into words, roman numeral converter, online number converter, free number converter, unitconvertly"
+    />
+    <meta name="author" content="UnitConvertly Team" />
+
+    <style>
+      :root {
+        --primary: #1e40af;
+        --primary-dark: #1e3a8a;
+        --accent: #3b82f6;
+        --bg: #f8fafc;
+        --white: #ffffff;
+        --text: #0f172a;
+        --border: #e2e8f0;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header {
+        width: 100%;
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--primary-dark) 100%
+        );
+        color: white;
+        padding: 0.5rem 1rem;
+        box-shadow: var(--shadow-lg);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+      .logo-icon {
+        width: 2rem;
+        height: 2rem;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+      }
+      .logo div {
+        font-size: 1.5rem;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.6rem;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 0.375rem;
+        text-decoration: none;
+      }
+
+      @media (max-width: 768px) {
+        .menu-btn {
+          display: block;
+        }
+        .logo h1 {
+          font-size: 1.2rem;
+        }
+      }
+
+      main {
+        flex: 1;
+        max-width: 800px;
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      /* Breadcrumb */
+      .breadcrumb {
+        margin-top: 20px;
+        font-size: 0.9rem;
+      }
+      .breadcrumb a {
+        color: var(--primary);
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .breadcrumb a:hover {
+        text-decoration: underline;
+      }
+      .breadcrumb span {
+        color: #555;
+      }
+
+      .converter {
+        background: var(--white);
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        box-shadow: var(--shadow);
+        margin-top: 20px;
+      }
+      .converter h1 {
+        text-align: center;
+        color: var(--primary);
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+      }
+      .input-group {
+        margin-bottom: 1rem;
+      }
+      .input-label {
+        font-weight: bold;
+        margin-bottom: 0.25rem;
+        display: block;
+      }
+      .input-field {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid var(--border);
+        border-radius: 0.5rem;
+        font-size: 1rem;
+      }
+
+      .result {
+        background: #fef3c7;
+        border: 1px solid #fbbf24;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        text-align: left;
+        font-weight: bold;
+        color: #92400e;
+        margin-bottom: 1rem;
+        min-height: 120px;
+      }
+
+      .conversion-results {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+      }
+
+      .conversion-item {
+        padding: 0.5rem;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 0.375rem;
+        border: 1px solid #f59e0b;
+      }
+
+      .conversion-item strong {
+        color: #92400e;
+        display: inline-block;
+        min-width: 70px;
+      }
+
+      .number-display {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        margin: 1rem 0;
+        padding: 1rem;
+        background: #f1f5f9;
+        border-radius: 0.5rem;
+      }
+
+      .number-box {
+        padding: 0.75rem 1.5rem;
+        background: var(--accent);
+        color: white;
+        border-radius: 0.5rem;
+        font-size: 1.1rem;
+        font-weight: bold;
+        min-width: 80px;
+        text-align: center;
+      }
+
+      .arrow {
+        font-size: 1.5rem;
+        color: var(--accent);
+        font-weight: bold;
+      }
+
+      .output-box {
+        padding: 0.75rem 1.5rem;
+        background: #10b981;
+        color: white;
+        border-radius: 0.5rem;
+        font-size: 1.1rem;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      section {
+        margin: 2rem 1rem;
+      }
+      h3 {
+        margin-bottom: 0.5rem;
+        color: var(--primary);
+      }
+      section p {
+        text-align: justify;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 0.5rem;
+      }
+      th,
+      td {
+        border: 1px solid var(--border);
+        padding: 0.75rem;
+        text-align: left;
+      }
+      th {
+        background: var(--accent);
+        color: white;
+      }
+
+      .formula {
+        margin: 2rem 1rem;
+        padding: 1rem;
+        background: #f1f5f9;
+        border-left: 4px solid var(--accent);
+        border-radius: 0.5rem;
+      }
+      .formula h3 {
+        margin-bottom: 0.5rem;
+      }
+      .formula ul {
+        padding-left: 1.2rem;
+        list-style: disc;
+      }
+
+      .related-tools {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+      .related-col {
+        padding: 0.2rem;
+      }
+      .related-col h4 {
+        margin-bottom: 0.5rem;
+        color: var(--primary-dark);
+      }
+      ul {
+        list-style: none;
+        padding-left: 0;
+      }
+      ul li {
+        margin: 0.3rem 0;
+      }
+      ul li a {
+        color: rgb(14, 94, 75);
+        text-decoration: none;
+      }
+      ul li a:hover {
+        text-decoration: underline;
+      }
+
+      .examples-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .example-card {
+        background: var(--white);
+        padding: 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .example-card h4 {
+        color: var(--primary-dark);
+        margin-bottom: 0.5rem;
+      }
+
+      footer {
+        width: 100%;
+        background: var(--text);
+        color: white;
+        padding: 1rem;
+      }
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+      }
+      .footer-links {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .footer-links a {
+        color: #cbd5e1;
+        text-decoration: none;
+        font-size: 0.95rem;
+      }
+      .footer-links a:hover {
+        text-decoration: underline;
+      }
+      .footer-copy {
+        font-size: 0.85rem;
+        color: #94a3b8;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-content">
+        <div class="logo">
+          <div class="logo-icon" aria-label="UnitConvertly Logo">⚡</div>
+          <div>Unit Convertly</div>
+        </div>
+        <a href="javascript:void(0)" class="menu-link" onclick="openSitemap()"
+          >☰</a
+        >
+      </div>
+    </header>
+
+    <main>
+      <!-- Breadcrumb -->
+      <div class="breadcrumb">
+        <a href="../Index.html">Home</a> / <a>Numbers</a> /
+        <span>Number to Words & Roman</span>
+      </div>
+
+      <!-- Converter -->
+      <div class="converter">
+        <h1>Number to Words & Roman Converter</h1>
+        <div class="result" id="result">
+          Enter a number to see the conversion
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Enter Number</label>
+          <input
+            type="number"
+            id="inputValue"
+            class="input-field"
+            placeholder="Enter any number (1-3999 for Roman)"
+          />
+        </div>
+
+        <div class="number-display">
+          <div class="number-box" id="numberDisplay">0</div>
+          <div class="arrow">→</div>
+          <div class="output-box">Words & Roman</div>
+        </div>
+      </div>
+
+      <!-- Formula & Examples -->
+      <div class="formula">
+        <h3>How it works:</h3>
+        <p>
+          <strong>Number → English Words + Hindi Words + Roman Numerals</strong>
+        </p>
+        <h3>Examples:</h3>
+        <ul>
+          <li>1 → One, एक, I</li>
+          <li>5 → Five, पांच, V</li>
+          <li>10 → Ten, दस, X</li>
+          <li>100 → One Hundred, एक सौ, C</li>
+          <li>2024 → Two Thousand Twenty Four, दो हजार चौबीस, MMXXIV</li>
+        </ul>
+      </div>
+
+      <!-- About -->
+      <section>
+        <h3>About Number Conversion</h3>
+        <p>
+          Convert any number into English words, Hindi words, and Roman numerals
+          instantly. Perfect for educational purposes, document writing, check
+          writing, and learning different number systems. Our converter supports
+          numbers from 1 to 3999 for Roman numerals and unlimited range for word
+          conversion.
+        </p>
+      </section>
+
+      <!-- Roman Numerals Reference Table -->
+      <section>
+        <h3>Roman Numerals Reference</h3>
+        <table>
+          <tr>
+            <th>Number</th>
+            <th>Roman</th>
+            <th>English</th>
+            <th>Hindi</th>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>I</td>
+            <td>One</td>
+            <td>एक</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>V</td>
+            <td>Five</td>
+            <td>पांच</td>
+          </tr>
+          <tr>
+            <td>10</td>
+            <td>X</td>
+            <td>Ten</td>
+            <td>दस</td>
+          </tr>
+          <tr>
+            <td>50</td>
+            <td>L</td>
+            <td>Fifty</td>
+            <td>पचास</td>
+          </tr>
+          <tr>
+            <td>100</td>
+            <td>C</td>
+            <td>One Hundred</td>
+            <td>एक सौ</td>
+          </tr>
+          <tr>
+            <td>500</td>
+            <td>D</td>
+            <td>Five Hundred</td>
+            <td>पांच सौ</td>
+          </tr>
+          <tr>
+            <td>1000</td>
+            <td>M</td>
+            <td>One Thousand</td>
+            <td>एक हजार</td>
+          </tr>
+        </table>
+      </section>
+
+      <!-- Examples Grid -->
+      <section>
+        <h3>Number Examples</h3>
+        <div class="examples-grid">
+          <div class="example-card">
+            <h4>Common Large Numbers</h4>
+            <ul style="list-style: disc; padding-left: 1.2rem">
+              <li><strong>1,000:</strong> One Thousand (एक हजार)</li>
+              <li><strong>10,000:</strong> Ten Thousand (दस हजार)</li>
+              <li><strong>100,000:</strong> One Hundred Thousand (एक लाख)</li>
+              <li><strong>1,000,000:</strong> One Million (दस लाख)</li>
+              <li><strong>10,000,000:</strong> Ten Million (एक करोड़)</li>
+            </ul>
+          </div>
+
+          <div class="example-card">
+            <h4>Year Examples</h4>
+            <ul style="list-style: disc; padding-left: 1.2rem">
+              <li><strong>1947:</strong> Nineteen Forty Seven</li>
+              <li><strong>2000:</strong> Two Thousand</li>
+              <li><strong>2024:</strong> Twenty Twenty Four</li>
+              <li><strong>2025:</strong> Twenty Twenty Five</li>
+              <li><strong>1999:</strong> Nineteen Ninety Nine</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section>
+        <h3>FAQs</h3>
+        <p><strong>Q:</strong> What is the maximum number I can convert?</p>
+        <p>
+          <strong>A:</strong> For Roman numerals: 1-3999. For words: virtually
+          unlimited.
+        </p>
+        <p><strong>Q:</strong> Can I convert decimal numbers?</p>
+        <p><strong>A:</strong> Currently, only whole numbers are supported.</p>
+        <p><strong>Q:</strong> How accurate are the Hindi translations?</p>
+        <p>
+          <strong>A:</strong> Very accurate, following standard Hindi number
+          naming conventions.
+        </p>
+      </section>
+
+      <!-- Related Tools -->
+       <section>
+        <div class="related-tools">
+          
+          <div class="related-col">
+            <h4>Converters</h4>
+            <ul>
+              <li><a href="../index.html">Unit Converters</a></li>
+              <li>
+                <a href="../converter/length-converter.html"
+                  >Length Converter</a
+                >
+              </li>
+              <li>
+                <a href="../converter/temprature-converter.html"
+                  >Temprature Converter</a
+                >
+              </li>
+              <li>
+                <a href="../converter/storage-converter.html"
+                  >Storage Converter</a
+                >
+              </li>
+               <li>
+                <a href="../converter/time-converter.html"
+                  >Time Converter</a
+                >
+              </li>
+               <li>
+                <a href="../converter/speed-converter.html"
+                  >Speed Converter</a
+                >
+              </li>
+              <li>
+                <a href="../converter/frequency-converter.html"
+                  >Frequancy Converter</a
+                >
+              </li>
+              </li>
+              <li>
+                <a href="../converter/mass-converter.html"
+                  >Mass Converter</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="related-col">
+            <h4>Other Converter</h4>
+            <ul>
+              <li><a href="../converter/color-code-converter.html">Color-code converter </a></li>
+              <li>
+                <a href="../converter/text-case-converter.html">Text Case Converter</a>
+              </li>
+              <li><a href="../converter/base-converter.html">Binary Converter</a></li>
+              <li>
+                <a href="../converter/number-converter.html">Number Converter</a>
+              </li>
+               <li>
+                <a href="../converter/gold-weight-converter.html">gold-weight-converter </a>
+              </li>
+                <li>
+                <a href="../converter/large-number-converter.html">Large-number Converter </a>
+              </li>
+            </ul>
+          </div>
+           <div class="related-col">
+            <h4>Other tools</h4>
+            <ul>
+              <li><a href="../tools/number-generator.html">Number Generator </a></li>
+              <li>
+                <a href="../tools/word-counter.html">Word Counter</a>
+              </li>
+              <li><a href="../text/letter-to-ascii.html">letter-to-Ascii</a></li>
+              <li>
+                <a href="../number/number-to-roman.html">number-to-roman</a>
+              </li>
+              <li>
+                <a href="../number/number-to-word.html">number-to-word</a>
+              </li>
+            </ul>
+          </div>
+          <div class="related-col">
+            <h4>Related Tools</h4>
+            <ul>
+              <li>
+                <a href="../calculators/avg-calculator.html"
+                  >Average Calculator</a
+                >
+              </li>
+              <li>
+                <a href="../calculators/percentage-calculator.html"
+                  >Percentage Calculator</a
+                >
+              </li>
+              <li>
+                <a href="../calculators/attendence-calculator.html"
+                  >Attendence Calculator</a
+                >
+              </li>
+              <li>
+                <a href="../calculators/discount-calculator.html"
+                  >Discount Calculator</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="../about.html">About</a>
+          <a href="../about.html">Contact</a>
+          <a href="../about.html">Privacy Policy</a>
+
+          <a href="../sitemap.html">Sitemap</a>
+        </div>
+        <div class="footer-copy">
+          © 2025 Unit Convertly. All Rights Reserved.
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Number to English words conversion
+      function numberToEnglish(num) {
+        if (num === 0) return "Zero";
+
+        const ones = [
+          "",
+          "One",
+          "Two",
+          "Three",
+          "Four",
+          "Five",
+          "Six",
+          "Seven",
+          "Eight",
+          "Nine",
+        ];
+        const teens = [
+          "Ten",
+          "Eleven",
+          "Twelve",
+          "Thirteen",
+          "Fourteen",
+          "Fifteen",
+          "Sixteen",
+          "Seventeen",
+          "Eighteen",
+          "Nineteen",
+        ];
+        const tens = [
+          "",
+          "",
+          "Twenty",
+          "Thirty",
+          "Forty",
+          "Fifty",
+          "Sixty",
+          "Seventy",
+          "Eighty",
+          "Ninety",
+        ];
+        const thousands = ["", "Thousand", "Million", "Billion", "Trillion"];
+
+        function convertHundreds(n) {
+          let result = "";
+          if (n >= 100) {
+            result += ones[Math.floor(n / 100)] + " Hundred ";
+            n %= 100;
+          }
+          if (n >= 20) {
+            result += tens[Math.floor(n / 10)] + " ";
+            n %= 10;
+          } else if (n >= 10) {
+            result += teens[n - 10] + " ";
+            return result;
+          }
+          if (n > 0) {
+            result += ones[n] + " ";
+          }
+          return result;
+        }
+
+        if (num < 0) {
+          return "Negative " + numberToEnglish(-num);
+        }
+
+        let result = "";
+        let thousandCounter = 0;
+
+        while (num > 0) {
+          if (num % 1000 !== 0) {
+            result =
+              convertHundreds(num % 1000) +
+              (thousands[thousandCounter] || "") +
+              " " +
+              result;
+          }
+          num = Math.floor(num / 1000);
+          thousandCounter++;
+        }
+
+        return result.trim();
+      }
+
+      // Number to Hindi words conversion with correct combinations
+      function numberToHindi(num) {
+        if (num === 0) return "शून्य";
+
+        const ones = [
+          "",
+          "एक",
+          "दो",
+          "तीन",
+          "चार",
+          "पांच",
+          "छह",
+          "सात",
+          "आठ",
+          "नौ",
+        ];
+
+        const teens = [
+          "दस",
+          "ग्यारह",
+          "बारह",
+          "तेरह",
+          "चौदह",
+          "पंद्रह",
+          "सोलह",
+          "सत्रह",
+          "अठारह",
+          "उन्नीस",
+        ];
+
+        const tens = [
+          "",
+          "",
+          "बीस",
+          "तीस",
+          "चालीस",
+          "पचास",
+          "साठ",
+          "सत्तर",
+          "अस्सी",
+          "नब्बे",
+        ];
+
+        // Special combinations for 21-99
+        const specialCombinations = {
+          21: "इक्कीस",
+          22: "बाईस",
+          23: "तेईस",
+          24: "चौबीस",
+          25: "पच्चीस",
+          26: "छब्बीस",
+          27: "सत्ताईस",
+          28: "अट्ठाईस",
+          29: "उनतीस",
+          31: "इकतीस",
+          32: "बत्तीस",
+          33: "तैंतीस",
+          34: "चौंतीस",
+          35: "पैंतीस",
+          36: "छत्तीस",
+          37: "सैंतीस",
+          38: "अड़तीस",
+          39: "उनतालीस",
+          41: "इकतालीस",
+          42: "बयालीस",
+          43: "तैंतालीस",
+          44: "चवालीस",
+          45: "पैंतालीस",
+          46: "छियालीस",
+          47: "सैंतालीस",
+          48: "अड़तालीस",
+          49: "उनचास",
+          51: "इक्यावन",
+          52: "बावन",
+          53: "तिरपन",
+          54: "चौवन",
+          55: "पचपन",
+          56: "छप्पन",
+          57: "सत्तावन",
+          58: "अट्ठावन",
+          59: "उनसठ",
+          61: "इकसठ",
+          62: "बासठ",
+          63: "तिरसठ",
+          64: "चौंसठ",
+          65: "पैंसठ",
+          66: "छियासठ",
+          67: "सड़सठ",
+          68: "अड़सठ",
+          69: "उनहत्तर",
+          71: "इकहत्तर",
+          72: "बहत्तर",
+          73: "तिहत्तर",
+          74: "चौहत्तर",
+          75: "पचहत्तर",
+          76: "छिहत्तर",
+          77: "सतहत्तर",
+          78: "अठहत्तर",
+          79: "उन्यासी",
+          81: "इक्यासी",
+          82: "बयासी",
+          83: "तिरासी",
+          84: "चौरासी",
+          85: "पचासी",
+          86: "छियासी",
+          87: "सत्तासी",
+          88: "अट्ठासी",
+          89: "नवासी",
+          91: "इक्यानवे",
+          92: "बानवे",
+          93: "तिरानवे",
+          94: "चौरानवे",
+          95: "पचानवे",
+          96: "छियानवे",
+          97: "सत्तानवे",
+          98: "अट्ठानवे",
+          99: "निन्यानवे",
+        };
+
+        const thousands = ["", "हजार", "लाख", "करोड़"];
+
+        function convertHundreds(n) {
+          let result = "";
+
+          if (n >= 100) {
+            result += ones[Math.floor(n / 100)] + " सौ ";
+            n %= 100;
+          }
+
+          // Check for special combinations first
+          if (n >= 21 && n <= 99 && specialCombinations[n]) {
+            result += specialCombinations[n] + " ";
+            return result;
+          }
+
+          if (n >= 20) {
+            result += tens[Math.floor(n / 10)] + " ";
+            n %= 10;
+          } else if (n >= 10) {
+            result += teens[n - 10] + " ";
+            return result;
+          }
+
+          if (n > 0) {
+            result += ones[n] + " ";
+          }
+
+          return result;
+        }
+
+        if (num < 0) {
+          return "ऋण " + numberToHindi(-num);
+        }
+
+        let result = "";
+        let thousandCounter = 0;
+
+        while (num > 0) {
+          if (num % 1000 !== 0) {
+            result =
+              convertHundreds(num % 1000) +
+              (thousands[thousandCounter] || "") +
+              " " +
+              result;
+          }
+          num = Math.floor(num / 1000);
+          thousandCounter++;
+        }
+
+        return result.trim();
+      }
+
+      // Number to Roman numerals conversion
+      function numberToRoman(num) {
+        if (num <= 0 || num > 3999) return "Out of range (1-3999)";
+
+        const values = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
+        const symbols = [
+          "M",
+          "CM",
+          "D",
+          "CD",
+          "C",
+          "XC",
+          "L",
+          "XL",
+          "X",
+          "IX",
+          "V",
+          "IV",
+          "I",
+        ];
+
+        let result = "";
+        for (let i = 0; i < values.length; i++) {
+          while (num >= values[i]) {
+            result += symbols[i];
+            num -= values[i];
+          }
+        }
+        return result;
+      }
+
+      function convert() {
+        const val = parseInt(document.getElementById("inputValue").value);
+        const resultEl = document.getElementById("result");
+        const numberDisplayEl = document.getElementById("numberDisplay");
+
+        if (isNaN(val) || document.getElementById("inputValue").value === "") {
+          resultEl.innerHTML = "Enter a valid number";
+          numberDisplayEl.textContent = "0";
+          return;
+        }
+
+        numberDisplayEl.textContent = val.toLocaleString();
+
+        const english = numberToEnglish(val);
+        const hindi = numberToHindi(val);
+        const roman = numberToRoman(val);
+
+        resultEl.innerHTML = `
+          <div class="conversion-results">
+            <div class="conversion-item">
+              <strong>English:</strong> ${english}
+            </div>
+            <div class="conversion-item">
+              <strong>हिंदी:</strong> ${hindi}
+            </div>
+            <div class="conversion-item">
+              <strong>Roman:</strong> ${roman}
+            </div>
+          </div>
+        `;
+      }
+
+      document.getElementById("inputValue").addEventListener("input", convert);
+      function openSitemap() {
+        window.location.href = "../../sitemap.html";
+      }
+    </script>
+  </body>
+</html>

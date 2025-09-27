@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Word Counter Tool | UnitConvertly</title>
+    <link rel="icon" href="../../row.svg" type="image/svg+xml" />
+    <meta
+      name="description"
+      content="UnitConvertly Word Counter se aap easily text mein words aur characters count kar sakte hain. Fast aur accurate word counting ke liye abhi try karein."
+    />
+    <meta
+      name="keywords"
+      content="word counter, character counter, text counter, online word counter, free word counter, count words online, unitconvertly"
+    />
+    <meta name="author" content="UnitConvertly Team" />
+
+    <style>
+      :root {
+        --primary: #1e40af;
+        --primary-dark: #1e3a8a;
+        --accent: #3b82f6;
+        --bg: #f8fafc;
+        --white: #ffffff;
+        --text: #0f172a;
+        --border: #e2e8f0;
+        --shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.12);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header {
+        width: 100%;
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--primary-dark) 100%
+        );
+        color: white;
+        padding: 0.6rem 1rem;
+        box-shadow: var(--shadow-lg);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+
+      .logo-icon {
+        width: 2rem;
+        height: 2rem;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+      }
+
+      .logo div {
+        font-size: 1.5rem;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .menu-link {
+        display: none;
+        color: white;
+        font-size: 1.6rem;
+        text-decoration: none;
+        padding: 0.5rem;
+        border-radius: 0.375rem;
+      }
+
+      @media (max-width: 768px) {
+        .menu-link {
+          display: block;
+        }
+        .logo h1 {
+          font-size: 1.2rem;
+        }
+      }
+
+      main {
+        flex: 1;
+        max-width: 900px;
+        margin: 0 auto;
+        width: 100%;
+        padding: 0 1rem;
+      }
+
+      .converter {
+        background: var(--white);
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: var(--shadow-lg);
+        margin-top: 25px;
+        border: 1px solid var(--border);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+      }
+
+      .converter:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .converter h1 {
+        text-align: center;
+        color: var(--primary);
+        margin-bottom: 1.5rem;
+        font-size: 1.2rem;
+      }
+
+      textarea {
+        width: 100%;
+        height: 150px;
+        padding: 14px;
+        font-size: 1rem;
+        border: 2px solid var(--border);
+        border-radius: 0.75rem;
+        resize: vertical;
+        margin-bottom: 1.5rem;
+        outline: none;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      textarea:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+      }
+
+      .stats-box {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 15px;
+        margin-top: 1rem;
+      }
+
+      .stat {
+        background: #f1f5f9;
+        padding: 1px;
+        border-radius: 0.75rem;
+        text-align: center;
+        box-shadow: var(--shadow);
+        border: 1px solid #e5e7eb;
+        transition: background 0.3s ease;
+      }
+
+      .stat:hover {
+        background: #e2e8f0;
+      }
+
+      .stat h4 {
+        color: var(--primary-dark);
+        font-size: 1rem;
+        margin-bottom: 0.4rem;
+        font-weight: 600;
+      }
+
+      .stat p {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: var(--text);
+      }
+
+      .clear-btn {
+        margin-top: 18px;
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 0.75rem;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: background 0.3s ease, transform 0.2s ease;
+        width: 100%;
+      }
+
+      .clear-btn:hover {
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+        transform: translateY(-2px);
+      }
+
+      section {
+        margin: 2rem 1rem;
+      }
+
+      h3 {
+        margin-bottom: 0.5rem;
+        color: var(--primary);
+      }
+      section p {
+        text-align: justify;
+      }
+
+      .related-tools {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .related-col {
+        padding: 0.2rem;
+      }
+
+      .related-col h4 {
+        margin-bottom: 0.5rem;
+        color: var(--primary-dark);
+      }
+
+      ul {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      ul li {
+        margin: 0.3rem 0;
+      }
+
+      ul li a {
+        color: rgb(14, 94, 75);
+        text-decoration: none;
+        font-size: 0.95rem;
+      }
+
+      ul li a:hover {
+        text-decoration: underline;
+      }
+
+      footer {
+        width: 100%;
+        background: var(--text);
+        color: white;
+        padding: 1rem;
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+      }
+
+      .footer-links {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .footer-links a {
+        color: #cbd5e1;
+        text-decoration: none;
+        font-size: 0.95rem;
+      }
+
+      .footer-links a:hover {
+        text-decoration: underline;
+      }
+
+      .footer-copy {
+        font-size: 0.85rem;
+        color: #94a3b8;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-content">
+        <div class="logo">
+          <div class="logo-icon" aria-label="UnitConvertly Logo">⚡</div>
+          <div>Unit Convertly</div>
+        </div>
+        <a href="javascript:void(0)" class="menu-link" onclick="openSitemap()"
+          >☰</a
+        >
+      </div>
+    </header>
+
+    <main>
+      <div class="converter">
+        <h1>Word Counter</h1>
+        <textarea
+          id="inputText"
+          placeholder="Type or paste your text here..."
+          oninput="updateStats()"
+        ></textarea>
+
+        <div class="stats-box">
+          <div class="stat">
+            <h4>Words</h4>
+            <p id="wordCount">0</p>
+          </div>
+          <div class="stat">
+            <h4>Characters (with spaces)</h4>
+            <p id="charWithSpaces">0</p>
+          </div>
+          <div class="stat">
+            <h4>Characters (without spaces)</h4>
+            <p id="charWithoutSpaces">0</p>
+          </div>
+          <div class="stat">
+            <h4>Sentences</h4>
+            <p id="sentenceCount">0</p>
+          </div>
+          <div class="stat">
+            <h4>Paragraphs</h4>
+            <p id="paraCount">0</p>
+          </div>
+        </div>
+
+        <button class="clear-btn" onclick="clearText()">Clear</button>
+      </div>
+
+      <section>
+        <h3>About Word Counter</h3>
+        <p>
+          The Word Counter tool helps you quickly calculate the number of words,
+          characters with spaces, characters without spaces, sentences, and
+          paragraphs in your text. This is helpful for writers, bloggers,
+          students, and professionals who need to stay within word limits or
+          measure text length for SEO and readability.
+        </p>
+      </section>
+
+      <section>
+        <h3>Frequently Asked Questions</h3>
+        <p>
+          <strong
+            >Q: What is the difference between characters with and without
+            spaces?</strong
+          ><br />A: Characters with spaces count all letters, numbers,
+          punctuation, and spaces. Characters without spaces ignore blank
+          spaces.
+        </p>
+        <p>
+          <strong>Q: Does the tool count line breaks?</strong><br />A: Line
+          breaks are counted as paragraph separators, not characters.
+        </p>
+      </section>
+
+   <section>
+        <div class="related-tools">
+         
+          
+          
+          
+          <div class="related-col">
+            <h4>Converters</h4>
+            <ul>
+              <li><a href="../index.html">Unit Converters</a></li>
+              <li>
+                <a href="../converter/length-converter.html"
+                  >Length Converter</a
+                >
+              </li>
+              <li>
+                <a href="../converter/temprature-converter.html"
+                  >Temprature Converter</a
+                >
+              </li>
+              <li>
+                <a href="../converter/storage-converter.html"
+                  >Storage Converter</a
+                >
+              </li>
+               <li>
+                <a href="../converter/time-converter.html"
+                  >Time Converter</a
+                >
+              </li>
+               <li>
+                <a href="../converter/speed-converter.html"
+                  >Speed Converter</a
+                >
+              </li>
+              <li>
+                <a href="../converter/frequency-converter.html"
+                  >Frequancy Converter</a
+                >
+              </li>
+              </li>
+              <li>
+                <a href="../converter/mass-converter.html"
+                  >Mass Converter</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="related-col">
+            <h4>Other Converter</h4>
+            <ul>
+              <li><a href="../converter/color-code-converter.html">Color-code converter </a></li>
+              <li>
+                <a href="../converter/text-case-converter.html">Text Case Converter</a>
+              </li>
+              <li><a href="../converter/base-converter.html">Binary Converter</a></li>
+              <li>
+                <a href="../converter/number-converter.html">Number Converter</a>
+              </li>
+               <li>
+                <a href="../converter/gold-weight-converter.html">gold-weight-converter </a>
+              </li>
+                <li>
+                <a href="../converter/large-number-converter.html">Large-number Converter </a>
+              </li>
+            </ul>
+          </div>
+           <div class="related-col">
+            <h4>Other tools</h4>
+            <ul>
+              <li><a href="../tools/number-generator.html">Number Generator </a></li>
+              <li>
+                <a href="../tools/word-counter.html">Word Counter</a>
+              </li>
+              <li><a href="../text/letter-to-ascii.html">letter-to-Ascii</a></li>
+              <li>
+                <a href="../number/number-to-roman.html">number-to-roman</a>
+              </li>
+              <li>
+                <a href="../number/number-to-word.html">number-to-word</a>
+              </li>
+            </ul>
+          </div>
+          <div class="related-col">
+            <h4>Related Tools</h4>
+            <ul>
+              <li>
+                <a href="../calculators/avg-calculator.html"
+                  >Average Calculator</a
+                >
+              </li>
+              <li>
+                <a href="../calculators/percentage-calculator.html"
+                  >Percentage Calculator</a
+                >
+              </li>
+              <li>
+                <a href="../calculators/attendence-calculator.html"
+                  >Attendence Calculator</a
+                >
+              </li>
+              <li>
+                <a href="../calculators/discount-calculator.html"
+                  >Discount Calculator</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="../about.html">About</a>
+          <a href="../about.html">Contact</a>
+          <a href="../about.html">Privacy Policy</a>
+
+          <a href="../sitemap.html">Sitemap</a>
+        </div>
+        <div class="footer-copy">
+          © 2025 Unit Convertly. All Rights Reserved.
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      function updateStats() {
+        let text = document.getElementById("inputText").value;
+
+        let words =
+          text.trim().length > 0
+            ? text.trim().split(/\s+/).filter(Boolean).length
+            : 0;
+
+        let charWithSpaces = text.length;
+        let charWithoutSpaces = text.replace(/\s/g, "").length;
+
+        let sentences = text
+          .split(/[.!?]+/)
+          .filter((s) => s.trim().length > 0).length;
+
+        let paras = text.split(/\n+/).filter((p) => p.trim().length > 0).length;
+
+        document.getElementById("wordCount").textContent = words;
+        document.getElementById("charWithSpaces").textContent = charWithSpaces;
+        document.getElementById("charWithoutSpaces").textContent =
+          charWithoutSpaces;
+        document.getElementById("sentenceCount").textContent = sentences;
+        document.getElementById("paraCount").textContent = paras;
+      }
+
+      function clearText() {
+        document.getElementById("inputText").value = "";
+        updateStats();
+      }
+      function openSitemap() {
+        window.location.href = "../../sitemap.html";
+      }
+    </script>
+  </body>
+</html>
